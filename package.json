@@ -1,0 +1,26 @@
+{
+  "name": "tutorial-ffmpeg",
+  "version": "1.0.0",
+  "description": "A quick introduction to ffmpeg and its usage with fluent-ffmpeg",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "ts-node ./src/index.ts"
+  },
+  "author": "Sonia Seddiki",
+  "license": "ISC",
+  "dependencies": {
+    "fluent-ffmpeg": "^2.1.2",
+    "node": "^17.0.1",
+    "pino": "^7.0.5",
+    "pino-pretty": "^7.1.0",
+    "runtypes": "^6.5.0",
+    "typescript": "^4.4.4"
+  },
+  "devDependencies": {
+    "@types/fluent-ffmpeg": "^2.1.18",
+    "@types/node": "^16.11.6",
+    "@types/pino": "^6.3.12",
+    "prettier": "^2.4.1",
+    "ts-node": "^10.4.0"
+  }
+}
