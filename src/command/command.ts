@@ -1,4 +1,6 @@
 import Ffmpeg from 'fluent-ffmpeg'
+import { CONCAT_TXT } from '../constants/filenames'
+import { FREQUENCY, MONO } from '../constants/rendering'
 import logger from '../logger/logger'
 
 export class Command {
@@ -6,8 +8,7 @@ export class Command {
     private name: string,
     private cwd: string,
     private debugMode: boolean = false,
-    private cmd: Ffmpeg.FfmpegCommand = Ffmpeg(),
-    private filters: Ffmpeg.FilterSpecification[] = []
+    private cmd: Ffmpeg.FfmpegCommand = Ffmpeg() //private filters: Ffmpeg.FilterSpecification[] = []
   ) {
     this.cmd = Ffmpeg({ cwd: this.cwd })
     if (this.debugMode) {
@@ -37,6 +38,17 @@ export class Command {
 
   output(filename: string, options?: string[]) {
     this.cmd.output(filename).outputOptions(options ?? [])
+
+    return this
+  }
+
+  concatPodcastFiles() {
+    this.cmd.input(CONCAT_TXT).inputOption('-safe 0').inputFormat('concat')
+    return this
+  }
+
+  convertAudio() {
+    this.cmd.audioChannels(MONO).audioFrequency(FREQUENCY)
 
     return this
   }
