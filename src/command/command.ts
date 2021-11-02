@@ -4,11 +4,15 @@ import { FREQUENCY, MONO } from '../constants/rendering'
 import logger from '../logger/logger'
 
 export class Command {
+  private cmd: Ffmpeg.FfmpegCommand
+  private filters: Ffmpeg.FilterSpecification[] = []
+  private filtergraphInputMapping: Map<string, number> = new Map()
+  private currentInputIndex = 0
+
   constructor(
     private name: string,
     private cwd: string,
-    private debugMode: boolean = false,
-    private cmd: Ffmpeg.FfmpegCommand = Ffmpeg() //private filters: Ffmpeg.FilterSpecification[] = []
+    private debugMode: boolean = false
   ) {
     this.cmd = Ffmpeg({ cwd: this.cwd })
     if (this.debugMode) {
@@ -32,6 +36,7 @@ export class Command {
 
   input(filename: string, options?: string[]) {
     this.cmd.input(filename).inputOptions(options ?? [])
+    this.filtergraphInputMapping.set(filename, this.currentInputIndex++)
 
     return this
   }
@@ -52,4 +57,23 @@ export class Command {
 
     return this
   }
+
+  addAudioSplitFilter(filename: string, nbOutputs: number) {
+    const index = this.filtergraphInputMapping.get(filename)
+    const outputs = []
+
+    for (let i = 0; i < nbOutputs; i++) {
+      outputs.push(`asplit_${i}`)
+    }
+
+    if (index) {
+      this.filters.push({
+        filter: 'asplit',
+        inputs: [index?.toString()],
+        outputs,
+      })
+    }
+  }
+
+  addAudioFadeFilter(filename: string, mode: 'in' | 'out') {}
 }
